@@ -11,3 +11,9 @@ class Career(models.Model):
     
     def __str__(self):
         return f"{self.title} by {self.username}"
+    
+class Comment(models.Model):
+    post = models.ForeignKey(Career, on_delete=models.CASCADE, related_name='comments')
+    username = models.CharField(max_length=255)
+    content = models.TextField()
+    created_datetime = models.DateTimeField(auto_now_add=True)

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Career
+from .models import Career, Comment
 
 class CareerSerializer(serializers.ModelSerializer):
     class Meta:
@@ -21,3 +21,8 @@ class CareerUpdateSerializer(serializers.ModelSerializer):
         # Remove username from validated_data as it's only for validation
         validated_data.pop('username', None)
         return super().update(instance, validated_data)
+    
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = '__all__'

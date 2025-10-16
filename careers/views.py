@@ -1,8 +1,8 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from django_filters import rest_framework as filters
-from .models import Career
-from .serializers import CareerSerializer, CareerUpdateSerializer
+from .models import Career, Comment
+from .serializers import CareerSerializer, CareerUpdateSerializer, CommentSerializer
 
 
 class CareerFilter(filters.FilterSet):
@@ -31,6 +31,63 @@ class CareerFilter(filters.FilterSet):
         model = Career
         fields = ['username', 'title']
 
+class CommentViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for managing comments on career posts.
+    
+    Endpoints:
+    - GET /comments/ - List all comments
+    - POST /comments/ - Create a comment
+    - GET /comments/{id}/ - Get a specific comment
+    - PATCH /comments/{id}/ - Update a comment (author only)
+    - DELETE /comments/{id}/ - Delete a comment (author only)
+    
+    Authorization: Only the author (username) can update or delete their comments.
+    """
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    
+    def update(self, request, *args, **kwargs):
+        """Only the comment author can update their comment."""
+        instance = self.get_object()
+        username = request.data.get('username')
+        
+        if not username:
+            return Response(
+                {"detail": "Username is required to update a comment"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        if instance.username != username:
+            return Response(
+                {"detail": "You can only edit your own comments"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        return super().update(request, *args, **kwargs)
+    
+    def partial_update(self, request, *args, **kwargs):
+        """Only the comment author can partially update their comment."""
+        return self.update(request, *args, **kwargs)
+    
+    def destroy(self, request, *args, **kwargs):
+        """Only the comment author can delete their comment."""
+        instance = self.get_object()
+        username = request.query_params.get('username')
+        
+        if not username:
+            return Response(
+                {"detail": "Username is required to delete a comment"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        if instance.username != username:
+            return Response(
+                {"detail": "You can only delete your own comments"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        return super().destroy(request, *args, **kwargs)
 
 class CareerViewSet(viewsets.ModelViewSet):
     """
