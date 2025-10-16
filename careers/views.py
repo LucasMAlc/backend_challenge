@@ -8,19 +8,6 @@ from .serializers import CareerSerializer, CareerUpdateSerializer, CommentSerial
 class CareerFilter(filters.FilterSet):
     """
     FilterSet for filtering posts.
-    
-    Available filters:
-    - username: Filter by username (case-insensitive, partial match)
-    - title: Filter by title (case-insensitive, partial match)
-    - created_after: Filter posts created after a specific date
-    - created_before: Filter posts created before a specific date
-    
-    Usage examples:
-    - GET /careers/?username=john
-    - GET /careers/?title=python
-    - GET /careers/?created_after=2025-01-01T00:00:00Z
-    - GET /careers/?created_before=2025-12-31T23:59:59Z
-    - GET /careers/?username=john&title=django
     """
     username = filters.CharFilter(lookup_expr='icontains')
     title = filters.CharFilter(lookup_expr='icontains')
@@ -33,15 +20,7 @@ class CareerFilter(filters.FilterSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     """
-    ViewSet for managing comments on career posts.
-    
-    Endpoints:
-    - GET /comments/ - List all comments
-    - POST /comments/ - Create a comment
-    - GET /comments/{id}/ - Get a specific comment
-    - PATCH /comments/{id}/ - Update a comment (author only)
-    - DELETE /comments/{id}/ - Delete a comment (author only)
-    
+    ViewSet for managing comments on posts.
     Authorization: Only the author (username) can update or delete their comments.
     """
     queryset = Comment.objects.all()
@@ -91,27 +70,8 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 class CareerViewSet(viewsets.ModelViewSet):
     """
-    ViewSet for managing career posts (complete CRUD).
-    
-    Available endpoints:
-    - GET /careers/ - List all posts (with pagination, filters and ordering)
-    - POST /careers/ - Create a new post
-    - GET /careers/{id}/ - Retrieve a specific post
-    - PATCH /careers/{id}/ - Partially update a post (author only)
-    - PUT /careers/{id}/ - Fully update a post (author only)
-    - DELETE /careers/{id}/ - Delete a post (author only)
-    
-    Available filters:
-    - ?username=john - Filter by username
-    - ?title=python - Filter by title
-    - ?created_after=2025-01-01 - Posts created after this date
-    - ?created_before=2025-12-31 - Posts created before this date
-    
-    Available ordering:
-    - ?ordering=created_datetime - Ascending order by date
-    - ?ordering=-created_datetime - Descending order by date (default)
-    - ?ordering=title - Alphabetical order by title
-    - ?ordering=username - Alphabetical order by username
+    ViewSet for managing posts.
+    Authorization: Only the author (username) can update or delete their posts
     """
     queryset = Career.objects.all()
     filterset_class = CareerFilter
