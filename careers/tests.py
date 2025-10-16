@@ -4,7 +4,7 @@ BASE_URL = "http://localhost:8000/careers/"
 COMMENTS_URL = "http://localhost:8000/comments/"
 
 print("\n" + "=" * 60)
-print("Testing Backend Challenge API")
+print("Testing API")
 print("=" * 60)
 
 # Clean up - Delete all existing posts

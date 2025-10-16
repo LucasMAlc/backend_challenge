@@ -149,24 +149,93 @@ backend_challenge/
 
 ## Testando a API
 
-### Usando Python (requests)
+### Usando test.py (requests)
 
 ```bash
 pip install requests
+
+cd careers
+
 python tests.py
 ```
 
 ### Usando Postman ou Insomnia
 
-1. **POST** `http://localhost:8000/careers/`
-   - Body (JSON): `{"username": "user", "title": "título", "content": "conteúdo"}`
+#### Posts
 
-2. **GET** `http://localhost:8000/careers/`
+##### Criar Post
+```bash
+POST http://localhost:8000/careers/
+Body: {"username": "john", "title": "My Post", "content": "Content here"}
+```
 
-3. **PATCH** `http://localhost:8000/careers/1/`
-   - Body (JSON): `{"username": "user", "title": "novo título"}`
+##### Listar Posts (com filtros e paginação)
+```bash
+# Listar todos
+GET http://localhost:8000/careers/
 
-4. **DELETE** `http://localhost:8000/careers/1/?username=user`
+# Filtrar por username
+GET http://localhost:8000/careers/?username=john
+
+# Filtrar por título
+GET http://localhost:8000/careers/?title=python
+
+# Filtrar por data
+GET http://localhost:8000/careers/?created_after=2025-01-01
+
+# Ordenar
+GET http://localhost:8000/careers/?ordering=-created_datetime
+GET http://localhost:8000/careers/?ordering=title
+
+# Paginação
+GET http://localhost:8000/careers/?page=1
+GET http://localhost:8000/careers/?page=2&page_size=20
+
+# Combinar filtros
+GET http://localhost:8000/careers/?username=john&ordering=-created_datetime&page=1
+```
+
+##### Atualizar Post
+```bash
+PATCH http://localhost:8000/careers/1/
+Body: {"username": "john", "title": "Updated Title"}
+```
+
+##### Deletar Post
+```bash
+DELETE http://localhost:8000/careers/1/?username=john
+```
+
+#### Comments
+
+##### Criar Comentário
+```bash
+POST http://localhost:8000/comments/
+Body: {"post": 1, "username": "jane", "content": "Great post!"}
+```
+
+##### Listar Comentários
+```bash
+# Todos os comentários
+GET http://localhost:8000/comments/
+
+# Filtrar por post
+GET http://localhost:8000/comments/?post=1
+
+# Filtrar por username
+GET http://localhost:8000/comments/?username=jane
+```
+
+##### Atualizar Comentário
+```bash
+PATCH http://localhost:8000/comments/1/
+Body: {"username": "jane", "content": "Updated comment"}
+```
+
+##### Deletar Comentário
+```bash
+DELETE http://localhost:8000/comments/1/?username=jane
+```
 
 ## Tecnologias Utilizadas
 
