@@ -4,7 +4,9 @@ Backend API construído com Django e Django REST Framework para gerenciar posts.
 
 ## Funcionalidades
 
-A API implementa operações CRUD completas:
+A API implementa operações CRUD:
+
+### Posts
 
 - **POST** `/careers/` - Criar um novo post
 - **GET** `/careers/` - Listar todos os posts
@@ -12,9 +14,25 @@ A API implementa operações CRUD completas:
 - **PATCH** `/careers/{id}/` - Atualizar título e/ou conteúdo
 - **DELETE** `/careers/{id}/` - Deletar um post
 
+### Comments
+
+- **GET** `/comments/` - Listar todos os comentários
+- **POST** `/comments/` - Criar um comentário
+- **GET** `/comments/{id}/` - Obter um comentário específico
+- **PATCH** `/comments/{id}/` - Atualizar um comentário (apenas autor)
+- **DELETE** `/comments/{id}/` - Deletar um comentário (apenas autor)
+
+## Bonus Points
+
+- Filtros: Buscar posts por username, título ou data
+- Ordenação: Ordenar posts por data, título ou username
+- Comentários: Sistema de comentários em posts
+
 ## Estrutura de Dados
 
-### Criar Post (POST)
+### Post
+
+#### Criar Post (POST)
 ```json
 {
   "username": "string",
@@ -23,7 +41,7 @@ A API implementa operações CRUD completas:
 }
 ```
 
-### Resposta (GET/POST/PATCH)
+#### Resposta (GET/POST/PATCH)
 ```json
 {
   "id": 1,
@@ -34,11 +52,33 @@ A API implementa operações CRUD completas:
 }
 ```
 
-### Atualizar Post (PATCH)
+#### Atualizar Post (PATCH)
 ```json
 {
   "title": "string",
   "content": "string"
+}
+```
+
+### Comment
+
+#### Criar Comentário (POST /comments/)
+```json
+{
+  "post": 1,
+  "username": "string",
+  "content": "string"
+}
+```
+
+#### Resposta
+```json
+{
+  "id": 1,
+  "post": 1,
+  "username": "string",
+  "content": "string",
+  "created_datetime": "2025-10-15T10:30:00Z"
 }
 ```
 
@@ -145,13 +185,29 @@ python tests.py
 
 ### Regras de Autorização
 
-- **Editar (PATCH)**: Apenas o autor (username) pode editar seu próprio post
+- **Editar (PATCH)**: Apenas o autor (username) pode editar seu próprio post ou comentário
   - O `username` deve ser enviado no body da requisição
   - Retorna `403 Forbidden` se o username não corresponder ao autor
   
-- **Deletar (DELETE)**: Apenas o autor (username) pode deletar seu próprio post
+- **Deletar (DELETE)**: Apenas o autor (username) pode deletar seu próprio post ou comentário
   - O `username` deve ser enviado como query parameter: `?username=autor`
   - Retorna `403 Forbidden` se o username não corresponder ao autor
+
+### Recursos de Filtros e Busca
+
+#### Filtros de Posts
+
+- `?username=john` - Filtra por username (busca parcial, case-insensitive)
+- `?title=python` - Filtra por título (busca parcial, case-insensitive)
+- `?created_after=2025-01-01` - Posts criados após esta data
+- `?created_before=2025-12-31` - Posts criados antes desta data
+
+#### Ordenação de Posts
+
+- `?ordering=created_datetime` - Ordem crescente por data
+- `?ordering=-created_datetime` - Ordem decrescente por data (padrão)
+- `?ordering=title` - Ordem alfabética por título
+- `?ordering=username` - Ordem alfabética por username
 
 ## Admin Panel
 
