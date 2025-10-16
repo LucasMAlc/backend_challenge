@@ -2,6 +2,8 @@
 
 Backend API construído com Django e Django REST Framework para gerenciar posts.
 
+Disponível em: https://backend-challenge-9u0c.onrender.com
+
 ## Funcionalidades
 
 A API implementa operações CRUD:
